@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/app/api/db-connect';
-import UpworkAccount from './model';
+import FakeAddress from './model';
 
 // get all account
 export async function GET(request: Request) {
@@ -16,45 +16,17 @@ export async function GET(request: Request) {
   console.log('search_keywords :>> ', search_keywords);
 
   await dbConnect();
-  const data = await UpworkAccount.find({}, fields, { skip: 1 });
+  const data = await FakeAddress.find({}, fields, { skip: 1 });
   return NextResponse.json({ data });
 }
 
-// create a new account
+// create a new fakeA_address
 export async function POST(request: Request) {
   await dbConnect();
-  const newUpworkAccount = await request.json();
+  const newFakeAddress = await request.json();
   try {
-    const data = await UpworkAccount.create(newUpworkAccount);
+    const data = await FakeAddress.create(newFakeAddress.data);
     return NextResponse.json({ data });
-  } catch (error: any) {
-    return NextResponse.json(error.message, {
-      status: 400,
-    });
-  }
-}
-
-// update several accounts info byc _id
-export async function PUT(request: Request) {
-  const { ids, updateData } = await request.json();
-  dbConnect();
-  try {
-    const taskUpdated = await UpworkAccount.updateMany(
-      { _id: { $in: ids } },
-      updateData
-    );
-
-    if (!taskUpdated)
-      return NextResponse.json(
-        {
-          message: 'Task not found',
-        },
-        {
-          status: 404,
-        }
-      );
-
-    return NextResponse.json(taskUpdated);
   } catch (error: any) {
     return NextResponse.json(error.message, {
       status: 400,
@@ -68,7 +40,7 @@ export async function DELETE(request: Request) {
   const { ids } = await request.json();
   console.log('ids :>> ', ids);
   try {
-    const accountDeleted = await UpworkAccount.deleteMany({
+    const accountDeleted = await FakeAddress.deleteMany({
       _id: { $in: ids },
     });
 
@@ -89,5 +61,3 @@ export async function DELETE(request: Request) {
     });
   }
 }
-
-export async function PATCH(request: Request) {}
